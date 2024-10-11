@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --account=def-tperkins
 #SBATCH --ntasks-per-node=32
-#SBATCH --mem=0
 #SBATCH --mail-user=mitch3@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=1:00:00
 #SBATCH --nodes=2
+#SBATCH --partition=compute_full_node
 
 module use $HOME/local/modules
 module --force purge
@@ -16,6 +16,5 @@ export LD_LIBRARY_PATH=$HOME/local/lib64:$LD_LIBRARY_PATH
 export CUDA_MPS_PIPE_DIRECTORY=~/scratch/mps
 export CUDA_MPS_LOG_DIRECTORY=~/scratch/mps
 nvidia-cuda-mps-control -d
-
 
 srun lmp_kk -k on g 4 -sf kk -pk kokkos neigh half -in osmr.in
