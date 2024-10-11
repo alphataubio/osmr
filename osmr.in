@@ -30,35 +30,30 @@ fix cmap all cmap charmmff.cmap
 fix_modify cmap energy yes
 
 read_data osmr.data fix cmap crossterm CMAP
-
-#read_psf osmr.psf
-#variable protein_only atom "i2_psf[2]==label2type(segment,PROA)"
-#group protein_only variable protein_only
-
 group protein id 1:15370
 
 #fix 1 all shake 1e-6 500 ${dcdfreq} m 1.008 a ${constraint_angletype}
-fix 2 all nvt temp 313.15 313.15 100.0
-fix 3 all recenter INIT INIT INIT shift all
+#fix 2 all nvt temp 313.15 313.15 100.0
+fix 2 all nve/limit 0.1
+fix 3 protein recenter INIT INIT INIT shift all
 
 # -------------------------------- COMPUTE and THERMO --------------------------------
 
 thermo 1
-thermo_style custom step time spcpu cpuremain etotal temp press vol
-
+thermo_style custom step time spcpu cpuremain etotal temp press vol f_2
 
 # -------------------------------- SOLVATE --------------------------------
 
-neigh_modify one 10000
+neigh_modify one 5000
 molecule tip3p_mol tip3p.mol
 lattice sc 3.1
 create_atoms 0 box mol tip3p_mol 12345
 group water subtract all protein
-delete_atoms overlap 3.1 water protein compress no mol yes
+delete_atoms overlap 5 water protein compress no mol yes
 
 # -------------------------------- MINIMIZE --------------------------------
 
-minimize 0.0 0.0 1000 10000
+minimize 0.0 0.0 100 1000
 write_data osmr-min.data
 
 # -------------------------------- DUMP and RUN --------------------------------
@@ -66,9 +61,6 @@ write_data osmr-min.data
 dump 1 protein dcd 10 osmr.dcd
 dump 2 protein custom 10 osmr.dump id mol type x y z ix iy iz
 
-
-reset_timestep  0
-run             100
-write_dump      all custom ${outputname}.dump id type x y z vx vy vz ix iy iz
-write_data      ${outputname}.data
+reset_timestep 0
+run 100
 
