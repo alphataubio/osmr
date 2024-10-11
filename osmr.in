@@ -42,11 +42,9 @@ fix 3 all recenter INIT INIT INIT shift all
 
 # -------------------------------- COMPUTE and THERMO --------------------------------
 
-thermo          1
+thermo 1
 thermo_style custom step time spcpu cpuremain etotal temp press vol
 
-dump            1 all dcd 1 ${outputname}.dcd
-dump_modify     1 unwrap yes
 
 # -------------------------------- SOLVATE --------------------------------
 
@@ -57,11 +55,15 @@ create_atoms 0 box mol tip3p_mol 12345
 group water subtract all protein
 delete_atoms overlap 3.1 water protein compress no mol yes
 
+dump 1 protein dcd 1 osmr.dcd
+dump 2 protein custom 1 osmr.dump id mol type x y z ix iy iz
+
 # -------------------------------- MINIMIZE --------------------------------
 
 minimize 0.0 0.0 1000 10000
 
-# -------------------------------- RUN --------------------------------
+# -------------------------------- DUMP and RUN --------------------------------
+
 
 reset_timestep  0
 run             10
