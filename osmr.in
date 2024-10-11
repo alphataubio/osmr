@@ -1,0 +1,70 @@
+echo            screen
+variable        dcdfreq index 2500
+variable        outputname index osmr
+
+# -------------------------------- CHARMM-GUI --------------------------------
+
+units           real
+boundary        p p p
+
+newton          off
+pair_style      lj/charmmfsw/coul/long 10 12
+pair_modify     mix arithmetic
+kspace_style    pppm 1e-6
+
+atom_style      full
+bond_style      harmonic
+angle_style     charmm
+dihedral_style  charmmfsw
+special_bonds   charmm
+improper_style  harmonic
+timestep        1
+
+neighbor        2 bin
+neigh_modify    delay 5 every 1
+
+# -------------------------------- DATA and FIXES --------------------------------
+
+fix cmap all cmap charmmff.cmap
+fix_modify cmap energy yes
+
+read_data osmr.data fix cmap crossterm CMAP
+
+#read_psf osmr.psf
+#variable protein_only atom "i2_psf[2]==label2type(segment,PROA)"
+#group protein_only variable protein_only
+
+group protein id 1:15370
+
+#fix 1 all shake 1e-6 500 ${dcdfreq} m 1.008 a ${constraint_angletype}
+fix 2 all nvt temp 313.15 313.15 100.0
+fix 3 all recenter INIT INIT INIT shift all
+
+# -------------------------------- COMPUTE and THERMO --------------------------------
+
+thermo          1
+thermo_style custom step time spcpu cpuremain etotal temp press vol
+
+dump            1 all dcd 1 ${outputname}.dcd
+dump_modify     1 unwrap yes
+
+# -------------------------------- SOLVATE --------------------------------
+
+neigh_modify one 10000
+molecule tip3p_mol tip3p.mol
+lattice sc 3.1
+create_atoms 0 box mol tip3p_mol 12345
+group water subtract all protein
+delete_atoms overlap 3.1 water protein compress no mol yes
+
+# -------------------------------- MINIMIZE --------------------------------
+
+minimize 0.0 0.0 1000 10000
+
+# -------------------------------- RUN --------------------------------
+
+reset_timestep  0
+run             10
+write_dump      all custom ${outputname}.dump id type x y z vx vy vz ix iy iz
+write_data      ${outputname}.data
+
