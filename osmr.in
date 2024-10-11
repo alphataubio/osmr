@@ -1,3 +1,4 @@
+
 echo            screen
 variable        dcdfreq index 2500
 variable        outputname index osmr
@@ -55,18 +56,19 @@ create_atoms 0 box mol tip3p_mol 12345
 group water subtract all protein
 delete_atoms overlap 3.1 water protein compress no mol yes
 
-dump 1 protein dcd 1 osmr.dcd
-dump 2 protein custom 1 osmr.dump id mol type x y z ix iy iz
-
 # -------------------------------- MINIMIZE --------------------------------
 
 minimize 0.0 0.0 1000 10000
+write_data osmr-min.data
 
 # -------------------------------- DUMP and RUN --------------------------------
 
+dump 1 protein dcd 10 osmr.dcd
+dump 2 protein custom 10 osmr.dump id mol type x y z ix iy iz
+
 
 reset_timestep  0
-run             10
+run             100
 write_dump      all custom ${outputname}.dump id type x y z vx vy vz ix iy iz
 write_data      ${outputname}.data
 
