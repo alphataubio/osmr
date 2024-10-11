@@ -65,10 +65,10 @@ mass 40 15.999  # OT
 neigh_modify one 5000
 lattice sc 3.1
 create_atoms 0 box mol tip3p_mol 12345
+velocity all create 313.15 12345 dist gaussian
 group water subtract all protein
 delete_atoms overlap 5 water protein compress no mol yes
 
-velocity all create 313.15 12345 dist gaussian
 
 # -------------------------------- MINIMIZE --------------------------------
 
