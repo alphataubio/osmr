@@ -1,11 +1,12 @@
 #!/bin/bash
 #SBATCH --account=def-tperkins
+#SBATCH --partition=compute_full_node
 #SBATCH --ntasks-per-node=32
+#SBATCH --gpus-per-node=4
 #SBATCH --mail-user=mitch3@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=1:00:00
 #SBATCH --nodes=2
-#SBATCH --partition=compute_full_node
 
 module use $HOME/local/modules
 module --force purge
