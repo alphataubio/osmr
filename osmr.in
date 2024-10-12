@@ -11,7 +11,7 @@ boundary        p p p
 newton          off
 pair_style      lj/charmmfsw/coul/long 10 12
 pair_modify     mix arithmetic
-kspace_style    pppm 1e-6
+kspace_style    pppm 1e-4
 
 atom_style      full
 bond_style      harmonic
@@ -47,7 +47,7 @@ fix 4 protein recenter INIT INIT INIT shift all
 
 # -------------------------------- COMPUTE and THERMO --------------------------------
 
-thermo 1
+thermo 10
 thermo_style custom step time spcpu cpuremain etotal temp press vol f_2
 
 # -------------------------------- SOLVATE --------------------------------
