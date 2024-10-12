@@ -39,10 +39,8 @@ molecule tip3p_mol tip3p.mol toff 38 boff 72 aoff 166
 #fix 1 all shake 1e-6 500 ${dcdfreq} m 1.008 b 73 a 167
 #fix 1 all shake 1e-6 500 ${dcdfreq} mol tip3p_mol
 
-#fix 2 all nvt temp 313.15 313.15 100.0
-fix 2 all langevin 313.15 313.15 100.0 12345
-fix 3 all nve/limit 0.1
-
+fix 2 all nve/limit 0.1
+fix 3 all langevin 313.15 313.15 100.0 12345
 fix 4 protein recenter INIT INIT INIT shift all
 
 # -------------------------------- COMPUTE and THERMO --------------------------------
