@@ -52,9 +52,6 @@ thermo_style custom step time spcpu cpuremain etotal temp press vol f_2
 
 # -------------------------------- SOLVATE --------------------------------
 
-# 13 13 0.04600000000000 0.40001352444501 0.04600000000000 0.40001352444501 # HT HT
-# 41 41 0.15210000000000 3.15057422683150 0.15210000000000 3.15057422683150 # OT OT
-
 pair_coeff 39 39 0.04600000000000 0.40001352444501 0.04600000000000 0.40001352444501 # HT HT
 pair_coeff 40 40 0.15210000000000 3.15057422683150 0.15210000000000 3.15057422683150 # OT OT
 bond_coeff 73 450.000 0.9572 # HT OT
@@ -63,23 +60,30 @@ mass 39 1.008  # HT
 mass 40 15.999  # OT
 
 neigh_modify one 5000
-lattice sc 3.1
+lattice sc 4.0
 create_atoms 0 box mol tip3p_mol 12345
 velocity all create 313.15 12345 dist gaussian
 group water subtract all protein
 delete_atoms overlap 5 water protein compress no mol yes
 
-
-# -------------------------------- MINIMIZE --------------------------------
+# -------------------------------- MINIMIZE and RELAX --------------------------------
 
 minimize 0.0 0.0 100 1000
+run 100
 write_data osmr-min.data
 
 # -------------------------------- DUMP and RUN --------------------------------
+
+unfix 2
+unfix 3
+
+variable dt equal 2
+timestep ${dt}
+fix 1 all shake 1e-6 500 1000 mol tip3p_mol
+fix 2 all npt temp 313.15 313.15 $(100.0*dt) iso 1.0 1.0 $(1000.0*dt) couple xyz mtk no pchain 0
 
 dump 1 protein dcd 10 osmr.dcd
 dump 2 protein custom 10 osmr.dump id mol type x y z vx vy vz ix iy iz
 
 reset_timestep 0
-run 100
-
+run 1000
