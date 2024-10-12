@@ -59,8 +59,8 @@ angle_coeff 167 55.00000 104.52000 0.00000 0.00000 # HT OT HT
 mass 39 1.008  # HT
 mass 40 15.999  # OT
 
-neigh_modify one 5000
-lattice sc 4.0
+neigh_modify one 4000
+lattice sc 3.1
 create_atoms 0 box mol tip3p_mol 12345
 velocity all create 313.15 12345 dist gaussian
 group water subtract all protein
