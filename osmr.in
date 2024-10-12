@@ -66,8 +66,8 @@ delete_atoms overlap 5 water protein compress no mol yes
 
 # -------------------------------- MINIMIZE and RELAX --------------------------------
 
-minimize 0.0 0.0 100 1000
-run 100
+minimize 0.0 0.0 1000 10000
+run 10000
 write_data osmr-min.data
 
 # -------------------------------- DUMP and RUN --------------------------------
