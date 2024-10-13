@@ -5,7 +5,7 @@
 #SBATCH --gpus-per-node=4
 #SBATCH --mail-user=mitch3@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --time=1:00:00
+#SBATCH --time=1-00
 #SBATCH --nodes=4
 
 module use $HOME/local/modules
