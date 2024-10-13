@@ -87,8 +87,8 @@ timestep ${dt}
 fix 1 all shake 1e-6 500 1000 b 73 a 167
 fix 2 all npt temp 313.15 313.15 $(100.0*dt) iso 1.0 1.0 $(1000.0*dt) couple xyz mtk no pchain 0
 
-dump 1 protein_ions dcd 10 osmr.dcd
-dump 2 protein_ions custom 10 osmr.dump id mol type x y z ix iy iz
+dump 1 protein_ions dcd 100 osmr.dcd
+dump 2 protein_ions custom 10 osmr.dump.gz id mol type x y z ix iy iz
 
 reset_timestep 0
 run 1000000
