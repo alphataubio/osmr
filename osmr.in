@@ -1,9 +1,7 @@
 
-echo            screen
-variable        dcdfreq index 2500
-variable        outputname index osmr
+echo none
 
-# -------------------------------- CHARMM-GUI --------------------------------
+# -------------------------------- CHARMM FORCEFIELD --------------------------------
 
 units           real
 boundary        p p p
@@ -30,7 +28,7 @@ fix cmap all cmap charmmff.cmap
 fix_modify cmap energy yes
 
 read_data osmr.data fix cmap crossterm CMAP &
-  extra/atom/types 2 extra/bond/types 1 extra/angle/types 1
+  extra/atom/types 3 extra/bond/types 1 extra/angle/types 1
 
 group protein id 1:15370
 molecule tip3p_mol tip3p.mol toff 38 boff 72 aoff 166
@@ -50,24 +48,31 @@ thermo_style custom step time spcpu cpuremain etotal temp press vol f_2
 
 # -------------------------------- SOLVATE --------------------------------
 
-pair_coeff 39 39 0.04600000000000 0.40001352444501 0.04600000000000 0.40001352444501 # HT HT
-pair_coeff 40 40 0.15210000000000 3.15057422683150 0.15210000000000 3.15057422683150 # OT OT
+mass 39 15.999  # OT
+mass 40 1.008  # HT
+mass 41 22.990  # SOD
+pair_coeff 39 39 0.15210000000000 3.15057422683150 0.15210000000000 3.15057422683150 # OT OT
+pair_coeff 40 40 0.04600000000000 0.40001352444501 0.04600000000000 0.40001352444501 # HT HT
+pair_coeff 41 41 0.04690000000000 2.51367073323297 0.04690000000000 2.51367073323297 # SOD SOD
 bond_coeff 73 450.000 0.9572 # HT OT
 angle_coeff 167 55.00000 104.52000 0.00000 0.00000 # HT OT HT
-mass 39 1.008  # HT
-mass 40 15.999  # OT
 
 neigh_modify one 4000
+region outside block -80 60 -80 50 -165 120 side out
+create_atoms 41 random 27 12345 outside
+set type 41 charge +1.0
+group ions type 41
 lattice sc 3.1
 create_atoms 0 box mol tip3p_mol 12345
 velocity all create 313.15 12345 dist gaussian
-group water subtract all protein
-delete_atoms overlap 5 water protein compress no mol yes
+group protein_ions union protein ions
+group water subtract all protein_ions
+delete_atoms overlap 5 water protein_ions compress no bond yes
 
 # -------------------------------- MINIMIZE and RELAX --------------------------------
 
 minimize 0.0 0.0 1000 10000
-run 10000
+run 1000
 write_data osmr-min.data
 
 # -------------------------------- DUMP and RUN --------------------------------
@@ -80,8 +85,8 @@ timestep ${dt}
 fix 1 all shake 1e-6 500 1000 mol tip3p_mol
 fix 2 all npt temp 313.15 313.15 $(100.0*dt) iso 1.0 1.0 $(1000.0*dt) couple xyz mtk no pchain 0
 
-dump 1 protein dcd 10 osmr.dcd
-dump 2 protein custom 10 osmr.dump id mol type x y z vx vy vz ix iy iz
+dump 1 protein_ions dcd 10 osmr.dcd
+dump 2 protein_ions custom 10 osmr.dump id mol type x y z vx vy vz ix iy iz
 
 reset_timestep 0
-run 1000
+run 1000000
