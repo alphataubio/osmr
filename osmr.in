@@ -67,7 +67,7 @@ create_atoms 0 box mol tip3p_mol 12345
 velocity all create 313.15 12345 dist gaussian
 group protein_ions union protein ions
 group water subtract all protein_ions
-delete_atoms overlap 5 water protein_ions compress no bond yes
+delete_atoms overlap 5 water protein_ions compress no bond yes mol yes
 
 # -------------------------------- MINIMIZE and RELAX --------------------------------
 
@@ -85,7 +85,8 @@ unfix 3
 variable dt equal 2
 timestep ${dt}
 #fix 1 all shake 1e-6 500 1000 mol tip3p_mol
-fix 1 all shake 1e-6 500 1000 b 73 a 167 t 39 40
+#fix 1 all shake 1e-6 500 1000 b 73 a 167 t 39 40
+fix 1 all shake 1e-6 500 1000 b 73 a 167
 fix 2 all npt temp 313.15 313.15 $(100.0*dt) iso 1.0 1.0 $(1000.0*dt) couple xyz mtk no pchain 0
 
 dump 1 protein_ions dcd 10 osmr.dcd
