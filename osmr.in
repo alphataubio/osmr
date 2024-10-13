@@ -71,8 +71,10 @@ delete_atoms overlap 5 water protein_ions compress no bond yes
 
 # -------------------------------- MINIMIZE and RELAX --------------------------------
 
-minimize 0.0 0.0 1000 10000
-run 1000
+#minimize 1e-4 0.0 1000 10000
+#run 1000
+minimize 1e-4 0.0 100 10000
+run 100
 write_data osmr-min.data
 
 # -------------------------------- DUMP and RUN --------------------------------
@@ -82,7 +84,8 @@ unfix 3
 
 variable dt equal 2
 timestep ${dt}
-fix 1 all shake 1e-6 500 1000 mol tip3p_mol
+#fix 1 all shake 1e-6 500 1000 mol tip3p_mol
+fix 1 all shake 1e-6 500 1000 constraint b 73 a 167 t 39 40
 fix 2 all npt temp 313.15 313.15 $(100.0*dt) iso 1.0 1.0 $(1000.0*dt) couple xyz mtk no pchain 0
 
 dump 1 protein_ions dcd 10 osmr.dcd
