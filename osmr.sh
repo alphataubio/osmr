@@ -6,7 +6,7 @@
 #SBATCH --mail-user=mitch3@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=1:00:00
-#SBATCH --nodes=2
+#SBATCH --nodes=4
 
 module use $HOME/local/modules
 module --force purge
