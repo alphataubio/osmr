@@ -1,12 +1,13 @@
 #!/bin/bash
 #SBATCH --account=def-tperkins
-#SBATCH --ntasks=160
-#SBATCH --ntasks-per-node=40
+#SBATCH --ntasks=128
+#SBATCH --ntasks-per-node=8
 #SBATCH --gpus-per-node=4
+#SBATCH --mem=0
 #SBATCH --mail-user=mitch3@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=1:00:00
-#SBATCH --nodes=4
+#SBATCH --nodes=16
 
 module --force purge
 module use $HOME/local/modules
@@ -20,4 +21,4 @@ export CUDA_MPS_PIPE_DIRECTORY=~/scratch/mps
 export CUDA_MPS_LOG_DIRECTORY=~/scratch/mps
 nvidia-cuda-mps-control -d
 
-srun lmp_kk -k on g 4 -sf kk -pk kokkos neigh half -in osmr.in
+mpirun -np 128 lmp_kk -k on g 4 -sf kk -pk kokkos neigh half -in osmr.in
