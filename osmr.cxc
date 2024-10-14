@@ -1,0 +1,25 @@
+
+close session
+
+set bg white
+graphics silhouettes t
+lighting depthCue f
+
+open /Users/mitch/Dropbox/lammps/osmr/osmr-ions.psf coords /Users/mitch/Downloads/osmr-1.dcd
+
+rainbow target c
+surface #1 transparency 70 replace true
+
+show :cys atoms
+#show :lys atoms
+
+# color calcium pink and magnesium green
+#color @cal deepPink1; size @cal atomRadius 1.76
+#color @cla green; size @cla atomRadius 1.02
+#style @cal,cla ball
+
+view matrix camera -0.33456,-0.34279,-0.87782,-407.89,-0.93277,-0.012164,0.36026,150.27,-0.13417,0.93933,-0.31567,-173.68
+view matrix models #1,1,0,0,0,0,1,0,0,0,0,1,0,#1.1,1,0,0,0,0,1,0,0,0,0,1,0
+
+save /Users/mitch/Dropbox/_uottawa/murphy_jahani/_figures/osmr.png width 800 height 1295 transparentBackground true
+
