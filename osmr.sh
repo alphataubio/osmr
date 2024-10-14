@@ -1,6 +1,5 @@
 #!/bin/bash
-#SBATCH --account=def-daveea
-#SBATCH --partition=compute_full_node
+#SBATCH --account=def-tperkins
 #SBATCH --ntasks=128
 #SBATCH --ntasks-per-node=32
 #SBATCH --gpus-per-node=4
