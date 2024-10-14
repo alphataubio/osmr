@@ -2,10 +2,11 @@
 #SBATCH --account=def-daveea
 #SBATCH --partition=compute_full_node
 #SBATCH --ntasks=128
+#SBATCH --ntasks-per-node=32
 #SBATCH --gpus-per-node=4
 #SBATCH --mail-user=mitch3@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --time=1:00:00
+#SBATCH --time=1-00
 #SBATCH --nodes=4
 
 module use $HOME/local/modules
@@ -18,4 +19,4 @@ export CUDA_MPS_PIPE_DIRECTORY=~/scratch/mps
 export CUDA_MPS_LOG_DIRECTORY=~/scratch/mps
 nvidia-cuda-mps-control -d
 
-srun lmp_kk -k on g 4 -sf kk -pk kokkos neigh half -in osmr.in
+mpirun -np 128 lmp_kk -k on g 4 -sf kk -pk kokkos neigh half -in osmr.in
